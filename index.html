@@ -1,1 +1,152 @@
-# project
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balaji Project - Mood Detection</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#e0e7ff,#fce7f3);color:#1e293b}
+header{text-align:center;padding:40px 15px}
+h1{color:#4338ca;font-size:2.5rem}
+main{max-width:850px;margin:auto;padding:15px}
+.card{background:white;padding:25px;margin:20px 0;border-radius:16px;box-shadow:0 5px 20px #0001}
+h2{color:#4338ca}
+p{line-height:1.6;color:#64748b}
+input{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
+button{background:#4f46e5;color:white;border:0;padding:12px 20px;border-radius:8px;margin-top:12px;cursor:pointer;font-weight:bold}
+button:hover{background:#3730a3}
+.result{background:#eef2ff;padding:15px;border-radius:10px;margin-top:15px;white-space:pre-wrap;line-height:1.7}
+footer{text-align:center;padding:25px;color:#64748b}
+</style>
+</head>
+<body>
+
+<header>
+<h1>😊 Mood Detection</h1>
+<p>Balaji Project | Happy and Sad Mood Classification</p>
+</header>
+
+<main>
+
+<section class="card">
+<h2>Level 1 - Count the Moods</h2>
+<p>Count the number of Happy and Sad sentences in the training dataset.</p>
+<button onclick="countMoods()">Count Moods</button>
+<div class="result" id="result1">Click to see the results.</div>
+</section>
+
+<section class="card">
+<h2>Level 2 - Guess the Mood</h2>
+<p>Enter a sentence. The program checks the keywords "won" and "lost" to predict the mood.</p>
+<input id="sentence" placeholder="Enter your sentence here">
+<button onclick="predictMood()">Predict Mood</button>
+<div class="result" id="result2">Your prediction will appear here.</div>
+</section>
+
+<section class="card">
+<h2>Level 3 - Test Accuracy</h2>
+<p>Test the program using five practice sentences and calculate its prediction accuracy.</p>
+<button onclick="testAccuracy()">Run Test</button>
+<div class="result" id="result3">Click to test the program.</div>
+</section>
+
+</main>
+
+<footer>Balaji Project | Mood Detection</footer>
+
+<script>
+const trainData = [
+["I got full marks in the test today!", "Happy"],
+["We won the college cricket match", "Happy"],
+["My friends planned a surprise party for me", "Happy"],
+["The food in the canteen was really tasty", "Happy"],
+["I am so excited for the weekend trip", "Happy"],
+["Our project got selected for the exhibition", "Happy"],
+["I finally learned how to ride a bicycle", "Happy"],
+["Mom made my favourite sweets today", "Happy"],
+["I lost my phone on the bus", "Sad"],
+["I failed in the mathematics exam", "Sad"],
+["My best friend is moving to another city", "Sad"],
+["It rained and our picnic was cancelled", "Sad"],
+["I missed the last bus and felt very upset", "Sad"],
+["My laptop stopped working before the submission", "Sad"],
+["i felt lonely during the long holiday", "Sad"]
+];
+
+// LEVEL 1
+function countMoods(){
+let happy=0,sad=0;
+for(let item of trainData){
+if(item[1].toLowerCase()==="happy") happy++;
+else if(item[1].toLowerCase()==="sad") sad++;
+}
+document.getElementById("result1").textContent =
+"Happy sentences: "+happy+
+"\nSad sentences: "+sad+
+"\nTotal sentences: "+trainData.length;
+}
+
+// LEVEL 2
+const happyWords=["won"];
+const sadWords=["lost"];
+const punctuation=["?","@","!","#","$","&","_","-",".",":",";",","];
+
+function guessMood(sentence){
+let happy=0,sad=0;
+for(let word of sentence.split(/\s+/)){
+let clean="";
+for(let ch of word){
+if(!punctuation.includes(ch)) clean+=ch;
+}
+clean=clean.toLowerCase();
+if(happyWords.includes(clean)) happy++;
+else if(sadWords.includes(clean)) sad++;
+}
+if(happy>sad) return "Happy";
+else if(sad>happy) return "Sad";
+else return "None";
+}
+
+function predictMood(){
+let sentence=document.getElementById("sentence").value;
+if(sentence.trim()===""){
+document.getElementById("result2").textContent="Please enter a sentence.";
+return;
+}
+let mood=guessMood(sentence);
+document.getElementById("result2").textContent=
+"Sentence: "+sentence+"\nPredicted Mood: "+mood;
+}
+
+// LEVEL 3
+const practiceData=[
+["I won a medal in the sports meet","Happy"],
+["I lost my notebook before the exam","Sad"],
+["My friends gave me a lovely surprise","Happy"],
+["The train was late and I felt upset","Sad"],
+["Today was a great day","Happy"]
+];
+
+function testAccuracy(){
+let correct=0;
+let output="";
+for(let [sentence,mood] of practiceData){
+let predicted=guessMood(sentence);
+output+="Sentence: "+sentence+"\n";
+output+="Predicted: "+predicted+"\n";
+output+="Actual: "+mood+"\n\n";
+if(predicted===mood) correct++;
+}
+let total=practiceData.length;
+let accuracy=(correct/total)*100;
+output+="Correct predictions: "+correct+"\n";
+output+="Total sentences: "+total+"\n";
+output+="Accuracy: "+accuracy+"%";
+document.getElementById("result3").textContent=output;
+}
+</script>
+</body>
+</html>
+
